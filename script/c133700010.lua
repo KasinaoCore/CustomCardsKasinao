@@ -36,7 +36,7 @@ end
 function s.damop(e,tp,eg,ep,ev,re,r,rp)
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
 	local ct=Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)
-	Duel.Damage(p,ct*200,REASON_EFFECT)
+	Duel.Damage(p,ct*500,REASON_EFFECT)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsLocation(LOCATION_GRAVE) and e:GetHandler():IsReason(REASON_BATTLE)
