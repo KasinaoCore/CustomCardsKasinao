@@ -31,7 +31,7 @@ function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,1,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_LVRANK)
-	local lv=Duel.AnnounceLevel(tp,1,8,g:GetFirst():GetLevel())
+	local lv=Duel.AnnounceNumber(tp,1,2,3,4,5,6,7,8)
 	Duel.SetTargetParam(lv)
 end
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
