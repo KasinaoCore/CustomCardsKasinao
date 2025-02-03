@@ -92,5 +92,5 @@ function s.spmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 end
 function s.spmcon(e,tp,eg,ev,re,r,rp)
-	return not Duel.IsExistingMatchingCard(nil,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
+	return not Duel.IsExistingMatchingCard(nil,tp,LOCATION_MZONE,0,1,e:GetHandler())
 end
