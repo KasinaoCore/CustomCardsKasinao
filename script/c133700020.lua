@@ -83,19 +83,12 @@ function s.activate(e,tp)
         local g=g1:Clone()
         g:Merge(g2)
         g:Merge(g3)
-        
         local sg=aux.SelectUnselectGroup(g,e,tp,3,3,s.rescon,1,tp,HINTMSG_TOGRAVE)
         if #sg==3 and Duel.SendtoGrave(sg,REASON_COST)==3 then
-            local sc=Duel.GetFirstMatchingCard(function(c) return s.skyfilter(c,e,tp) end,tp,LOCATION_DECK+LOCATION_HAND,0,nil)
-            if sc then
-                -- Ignore summoning conditions
-                local e1=Effect.CreateEffect(e:GetHandler())
-                e1:SetType(EFFECT_TYPE_SINGLE)
-                e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
-                sc:RegisterEffect(e1)
-                
-                Duel.SpecialSummon(sc,0,tp,tp,true,false,POS_FACEUP)
-            end
+            local g=Duel.SelectMatchingCard(tp,s.skyfilter,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,e,tp)
+			if #g>0 then
+				Duel.SpecialSummon(g,0,tp,tp,true,false,POS_FACEUP)
+			end
         end
     -- Effect 2: Summon Reactors
     else
