@@ -21,12 +21,12 @@ function s.initial_effect(c)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
 end
-s.listed_names={74137509,126218,36708764,CARD_FLAME_SWORDSMAN,id}
+s.listed_names={CARD_FLAME_SWORDSMAN,id}
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_TRIBUTE)
 end
 function s.filter(c)
-	return (c:IsCode(74137509) or c:IsCode(126218) or c:IsCode(36708764)) and c:IsAbleToHand()
+	return c.roll_dice and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
