@@ -20,7 +20,6 @@ function s.initial_effect(c)
 	e2:SetValue(DOUBLE_DAMAGE)
 	c:RegisterEffect(e2)
 end
-
 function s.filter(c,e,tp)
 	return c:IsSetCard(0x600) and c:IsCanBeSpecialSummoned(e,0,tp,true,false) and c:IsLocation(LOCATION_GRAVE)
 end
