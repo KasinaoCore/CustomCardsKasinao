@@ -36,7 +36,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
     -- Ancient Card Check
     local og=Duel.GetOperatedGroup()
     local tc=og:GetFirst()
-    if tc:IsCode(133700024,133700025) then
+    if tc:IsCode(133700021,133700025) then
         -- Reveal Ancient Card
         if Duel.SelectYesNo(tp,aux.Stringid(id,6)) then
             Duel.ConfirmCards(1-tp,tc)
