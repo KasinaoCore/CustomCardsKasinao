@@ -29,6 +29,7 @@ function s.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 end
+s.listed_series={SET_INFERNITY}
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)==0
 end
@@ -92,5 +93,15 @@ function s.spmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 end
 function s.spmcon(e,tp,eg,ev,re,r,rp)
-	return not Duel.IsExistingMatchingCard(nil,tp,LOCATION_MZONE,0,1,e:GetHandler())
+    local c = e:GetHandler()
+    local no_other_monsters = not Duel.IsExistingMatchingCard(nil,tp,LOCATION_MZONE,0,1,c)
+    local all_infernity = true
+    local g = Duel.GetMatchingGroup(nil,tp,LOCATION_MZONE,0,c)
+    for tc in aux.Next(g) do
+        if not tc:IsSetCard(0xb) then
+            all_infernity = false
+            break
+        end
+    end
+    return no_other_monsters or all_infernity
 end
