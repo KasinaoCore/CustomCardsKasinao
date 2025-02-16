@@ -15,8 +15,8 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_DIRECT_ATTACK)
 	c:RegisterEffect(e1)
- --recovers ab with damage
-local e2=Effect.CreateEffect(c)
+        --recovers ab with damage
+	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_DAMAGE)
 	e2:SetType(EFFECT_TYPE_IGNITION)
