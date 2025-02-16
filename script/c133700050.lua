@@ -46,7 +46,7 @@ end
 function s.atkval(e,c)
     local g=Duel.GetMatchingGroup(aux.FaceupFilter(Card.IsSetCard,0x501),e:GetHandlerPlayer(),LOCATION_MZONE,0,nil)
     local unique=g:GetClassCount(Card.GetCode)
-    return unique>=2 and (unique*300) or 0 -- Only apply if 2+ unique
+    return unique>=2 and (unique*100) or 0 -- Only apply if 2+ unique
 end
 function s.reptg2(e,c)
     local tp=e:GetHandlerPlayer()
