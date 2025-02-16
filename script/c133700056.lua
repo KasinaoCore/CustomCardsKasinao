@@ -15,16 +15,16 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_DIRECT_ATTACK)
 	c:RegisterEffect(e1)
-    --recovers ab
-    local e2=Effect.CreateEffect(c)
-    e2:SetDescription(aux.Stringid(id,0))
-    e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SPECIAL_SUMMON)
-    e2:SetType(EFFECT_TYPE_IGNITION)
-    e2:SetRange(LOCATION_MZONE)
-    e2:SetCountLimit(1,id)
-    e2:SetTarget(s.thtg)
-    e2:SetOperation(s.thop)
-    c:RegisterEffect(e2)
+ --recovers ab with damage
+local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_DAMAGE)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,id)
+	e2:SetTarget(s.thtg)
+	e2:SetOperation(s.thop)
+	c:RegisterEffect(e2)
 end
 s.listed_names={133700050}
 function s.cfilter(c)
@@ -37,32 +37,26 @@ function s.spcon(e,c)
 		and Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_ONFIELD,0,1,nil) 
 end
 function s.thfilter(c)
-    return c:IsSetCard(0x501) and (c:IsAbleToHand() or c:IsCanBeSpecialSummoned(nil,0,tp,false,false))
-        and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
+    return c:IsSetCard(0x501) and c:IsAbleToHand() 
+        and c:IsLocation(LOCATION_GRAVE|LOCATION_REMOVED)
 end
-
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+    if chkc then return chkc:IsLocation(LOCATION_GRAVE|LOCATION_REMOVED) 
+        and chkc:IsControler(tp) and s.thfilter(chkc) end
     if chk==0 then 
-        return Duel.IsExistingMatchingCard(aux.NecroValleyFilter(s.thfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) 
+        return Duel.IsExistingTarget(s.thfilter,tp,LOCATION_GRAVE|LOCATION_REMOVED,0,1,nil) 
     end
-    Duel.SetPossibleOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
-    Duel.SetPossibleOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+    local g=Duel.SelectTarget(tp,s.thfilter,tp,LOCATION_GRAVE|LOCATION_REMOVED,0,1,1,nil)
+    Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
+    Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,tp,500)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-    local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.thfilter),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,nil)
-    if #g==0 then return end
-    local tc=g:GetFirst()
-    local bHand=tc:IsAbleToHand()
-    local bSpecial=Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and tc:IsCanBeSpecialSummoned(e,0,tp,false,false)
-    if not (bHand or bSpecial) then return end
-    local op=Duel.SelectEffect(tp,
-        {bHand,aux.Stringid(id,1)},
-        {bSpecial,aux.Stringid(id,2)})
-    if op==1 then
-        Duel.SendtoHand(tc,nil,REASON_EFFECT)
-        Duel.ConfirmCards(1-tp,tc)
-    elseif op==2 then
-        Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+    local tc=Duel.GetFirstTarget()
+    if tc and tc:IsRelateToEffect(e) then
+        if Duel.SendtoHand(tc,nil,REASON_EFFECT)~=0 then
+            Duel.ConfirmCards(1-tp,tc)
+            Duel.Damage(tp,500,REASON_EFFECT)
+        end
     end
 end
