@@ -14,7 +14,6 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_BATTLE_DESTROYED)
 	c:RegisterEffect(e2)
 end
-s.listed_series={SET_WEDJU}
 --1 monster is destroyed
 function s.cfilter(c,tp)
 	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp)
