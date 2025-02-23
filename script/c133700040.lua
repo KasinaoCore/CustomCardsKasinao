@@ -19,6 +19,7 @@ function s.initial_effect(c)
     e2:SetOperation(s.negop)
     c:RegisterEffect(e2)
 end
+s.roll_dice=true
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
     return ep~=tp and Duel.IsChainNegatable(ev)
 end
