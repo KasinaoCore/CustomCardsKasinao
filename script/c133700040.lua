@@ -20,9 +20,7 @@ function s.initial_effect(c)
     c:RegisterEffect(e2)
 end
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-    return ep~=tp 
-        and re:IsHasType(EFFECT_TYPE_ACTIVATE)
-        and Duel.IsChainNegatable(ev)
+    return ep~=tp and Duel.IsChainNegatable(ev)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return true end
