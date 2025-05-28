@@ -21,7 +21,11 @@ function s.initial_effect(c)
 end
 s.roll_dice=true
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-    return ep~=tp and Duel.IsChainNegatable(ev)
+    if ep==tp then return false end
+    if re:IsHasType(EFFECT_TYPE_ACTIVATE) then
+        return Duel.IsChainDisablable(ev)
+    end
+    return Duel.IsChainNegatable(ev)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return true end
@@ -35,9 +39,13 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
     if not c:IsRelateToEffect(e) then return end
     local yourRoll=Duel.TossDice(tp,1)
     local oppRoll=Duel.TossDice(1-tp,1)
-    if yourRoll > oppRoll then
-        Duel.NegateEffect(ev)
-    elseif yourRoll == oppRoll then
+    if yourRoll>oppRoll then
+        if re:IsHasType(EFFECT_TYPE_ACTIVATE) then
+            Duel.NegateActivation(ev)
+        else
+            Duel.NegateEffect(ev)
+        end
+    elseif yourRoll==oppRoll then
         Duel.Draw(1-tp,1,REASON_EFFECT)
     end
 end
