@@ -16,8 +16,8 @@ function s.cfilter(c)
 	return c:IsFaceup() and c:IsSetCard(SET_DARK_MAGICIAN) and c:IsType(TYPE_MONSTER)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
-	return aux.SelectUnselectGroup(g,e,tp,2,2,aux.dncheck,0)
+	local g=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_MZONE,0,nil)
+	return #g==2 and aux.dncheck(g)
 end
 function s.rmfilter(c)
 	return c:IsMonster() and c:IsAbleToRemove() and (c:IsLocation(LOCATION_DECK|LOCATION_HAND) or aux.SpElimFilter(c))
