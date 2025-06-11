@@ -1,4 +1,4 @@
---Beckon to the Dark
+--Beckon to the Dark (K)
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -18,33 +18,20 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return (player_ct==0 or player_ct<opp_total) and opp_main>=2
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local g=Duel.GetMatchingGroup(s.filter,1-tp,LOCATION_MZONE,0,nil)
-	local leftmost=s.get_leftmost(g)
-	if leftmost then
-		Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,leftmost,1,0,0)
-	end
+  if chk==0 then
+    return Duel.IsExistingMatchingCard(s.filter,1-tp,LOCATION_MZONE,0,1,nil)
+  end
+  Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_TOGRAVE)
+  local g=Duel.SelectMatchingCard(1-tp,s.filter,1-tp,LOCATION_MZONE,0,1,1,nil)
+  Duel.SetTargetCard(g)
+  Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(s.filter,1-tp,LOCATION_MZONE,0,nil)
-	local leftmost=s.get_leftmost(g)
-	if leftmost then
-		Duel.SendtoGrave(leftmost,REASON_EFFECT)
-	end
+  local tc=Duel.GetFirstTarget()
+  if tc and tc:IsRelateToEffect(e) and tc:IsControler(1-tp) and s.filter(tc) then
+    Duel.SendtoGrave(tc,REASON_EFFECT)
+  end
 end
 function s.filter(c)
-	local seq=c:GetSequence()
-	return seq>=0 and seq<=4
-end
-function s.get_leftmost(g)
-	local min_seq=5
-	local leftmost=nil
-	for tc in aux.Next(g) do
-		local seq=tc:GetSequence()
-		if seq<min_seq then
-			min_seq=seq
-			leftmost=tc
-		end
-	end
-	return leftmost
+  return c:IsAbleToGrave()
 end
