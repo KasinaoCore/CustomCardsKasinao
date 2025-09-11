@@ -40,7 +40,6 @@ function s.spfilter(c,e,tp)
 	return c:IsMonster()
 		and c:GetLevel()==8
 		and c:IsRace(RACE_INSECT)
-		and not c:IsSummonableCard()
 		and c:IsCanBeSpecialSummoned(e,0,tp,true,false,POS_FACEUP_DEFENSE)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
