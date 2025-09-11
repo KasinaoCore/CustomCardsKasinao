@@ -1,4 +1,4 @@
--- Darkness Desperado
+-- Infernity Zero (Kasinao)
 local s,id=GetID()
 function s.initial_effect(c)
     -- Summon restrictions
@@ -45,7 +45,7 @@ function s.initial_effect(c)
 	e4:SetValue(s.damval)
 	c:RegisterEffect(e4)
 	local e5=e4:Clone()
-	e4:SetCode(EFFECT_NO_EFFECT_DAMAGE)
+	e5:SetCode(EFFECT_NO_EFFECT_DAMAGE)
 	c:RegisterEffect(e5)
     -- Battle indestructible
     local e6=Effect.CreateEffect(c)
