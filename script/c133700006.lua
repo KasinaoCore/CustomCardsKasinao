@@ -37,7 +37,11 @@ function s.matfilter(c,fc,sumtype,sump,sub,mg,sg)
 	return c:IsRace(RACE_INSECT,fc,sumtype,sump) and (not sg or sg:FilterCount(aux.TRUE,c)==0 or sg:IsExists(Card.IsAttribute,1,c,c:GetAttribute(),fc,sumtype,sump))
 end
 function s.spfilter(c,e,tp)
-	return c:GetLevel()==8 and c:IsRace(RACE_INSECT) and c:IsCanBeSpecialSummoned(e,0,tp,true,false,POS_FACEUP_DEFENSE)
+	return c:IsMonster()
+		and c:GetLevel()==8
+		and c:IsRace(RACE_INSECT)
+		and not c:IsSummonableCard()
+		and c:IsCanBeSpecialSummoned(e,0,tp,true,false,POS_FACEUP_DEFENSE)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
