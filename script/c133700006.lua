@@ -64,7 +64,8 @@ function s.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetTargetCards(e)
-	if #g>0 then
+	if g and #g>0 then
         Duel.ChangePosition(g,POS_FACEUP_DEFENSE)
 	end
 end
+
