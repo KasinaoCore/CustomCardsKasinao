@@ -34,23 +34,38 @@ end
 
 -- Activation
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	-- select any number of non-Machine Ojamas
+	-- get all eligible non-Machine Ojamas
 	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_MZONE,0,nil)
 	if #g==0 then return end
+	-- prompt player to select any number of monsters
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local sg=g:SelectSubGroup(tp,aux.TRUE,false,1,#g)
-	if not sg then return end
-	-- sum their levels
+	local sg=Group.CreateGroup()
+	local cancel=false
+	while #g>0 and not cancel do
+		local tc=g:Select(tp,1,1,nil)
+		sg:AddCard(tc:GetFirst())
+		g:RemoveCard(tc:GetFirst())
+		if #g==0 then break end
+		-- ask if player wants to add more
+		cancel=Duel.SelectYesNo(tp,aux.Stringid(id,1)) -- "Do you want to add another monster?"
+	end
+
+	if #sg==0 then return end
+
+	-- sum levels
 	local lv=0
 	for tc in sg:Iter() do
 		lv=lv+tc:GetLevel()
 	end
+
 	-- tribute selected monsters
 	Duel.SendtoGrave(sg,REASON_COST+REASON_RELEASE)
-	-- special summon from the deck
+
+	-- special summon from deck
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	local sp=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,lv,e,tp)
 	if #sp>0 then
 		Duel.SpecialSummon(sp,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+
