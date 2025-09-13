@@ -20,10 +20,9 @@ end
 
 -- Filter: LIGHT Machine with exact level
 function s.spfilter(c,lv,e,tp)
-	return c:IsLevel(lv) and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_MACHINE)
+	return c:IsLevelBelow(lv) and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_MACHINE)
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
-
 -- Targeting: selects any number of non-Machine Ojamas
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
