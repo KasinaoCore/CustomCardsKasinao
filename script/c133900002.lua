@@ -44,24 +44,19 @@ end
 
 -- Activation
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	-- Get the targeted cards
 	local g=Duel.GetTargetCards(e)
-	-- A variable to hold the combined level of the monsters
 	local lv_sum=0
 	local tg=Group.CreateGroup()
 	if g:GetCount()>0 then
-		-- Check if the monsters are still on the field and can be tributed
 		for tc in aux.Next(g) do
 			if tc:IsRelateToEffect(e) and tc:IsAbleToGraveAsCost() then
 				tg:AddCard(tc)
 			end
 		end
 	end
-
-	-- If there are no valid targets to tribute, the effect resolves without effect
-	if tg:GetCount()==0 then return end
 	
-	-- Get the sum of the levels *before* sending them to the graveyard
+	if tg:GetCount()==0 then return end
+
 	for tc in aux.Next(tg) do
 		lv_sum=lv_sum+tc:GetLevel()
 	end
@@ -78,7 +73,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	-- Select and special summon from the deck
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local sp=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,lv_sum)
-	if sp:GetCount()>0 then
+	if not sp:Is_Empty() then
 		Duel.SpecialSummon(sp,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
