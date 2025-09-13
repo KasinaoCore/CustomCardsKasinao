@@ -1,4 +1,4 @@
--- Mecha Ojama King Transformation
+-- Mecha Ojama King Transformation (K)
 local s,id=GetID()
 function s.initial_effect(c)
 	-- Activate
@@ -15,57 +15,56 @@ end
 
 -- Filter for non-Machine Ojama monsters
 function s.filter(c)
-	return c:IsFaceup() and c:IsSetCard(0xf) and not c:IsRace(RACE_MACHINE) and c:IsAbleToGraveAsCost()
+	-- The check for being able to be tributed as cost.
+	return c:IsFaceup() and c:IsSetCard(0xf) and not c:IsRace(RACE_MACHINE)
 end
 
 -- Filter for LIGHT Machine monsters with specific level
-function s.spfilter(c,lv,e,tp)
-	return c:IsLevel(lv) and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_MACHINE)
-		and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function s.spfilter(c,e,tp,sum_lv)
+	return c:IsLevelBelow(sum_lv) and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_MACHINE)
+	and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 
--- Targeting
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return false end
-	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_MZONE,0,1,nil) end
-	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_MZONE,0,nil)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.filter(chkc) end
+	if chk==0 then
+		-- Use Duel.IsExistingMatchingCard with the "any number of monsters" check
+		return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil)
+	end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,99,nil)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_TO_GRAVE,e:GetTargetCards(),1,tp,0)
 end
 
 -- Activation
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-	-- get all eligible non-Machine Ojamas
-	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_MZONE,0,nil)
-	if #g==0 then return end
-	-- prompt player to select any number of monsters
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local sg=Group.CreateGroup()
-	local cancel=false
-	while #g>0 and not cancel do
-		local tc=g:Select(tp,1,1,nil)
-		sg:AddCard(tc:GetFirst())
-		g:RemoveCard(tc:GetFirst())
-		if #g==0 then break end
-		-- ask if player wants to add more
-		cancel=Duel.SelectYesNo(tp,aux.Stringid(id,1)) -- "Do you want to add another monster?"
+	local g=Duel.GetTargetCards(e)
+	local lv_sum=0
+	local tg=Group.CreateGroup()
+	if g:GetCount()>0 then
+		for tc in aux.Next(g) do
+			if tc:IsRelateToEffect(e) and tc:IsAbleToGraveAsCost() then
+				tg:AddCard(tc)
+			end
+		end
 	end
+	
+	if tg:GetCount()==0 then return end
 
-	if #sg==0 then return end
-
-	-- sum levels
-	local lv=0
-	for tc in sg:Iter() do
-		lv=lv+tc:GetLevel()
+	for tc in aux.Next(tg) do
+		lv_sum=lv_sum+tc:GetLevel()
 	end
+	
+	Duel.SendtoGrave(tg,REASON_COST+REASON_RELEASE)
+	
+	if lv_sum==0 then return end
 
-	-- tribute selected monsters
-	Duel.SendtoGrave(sg,REASON_COST+REASON_RELEASE)
-
-	-- special summon from deck
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	local sp=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,lv,e,tp)
-	if #sp>0 then
+	
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local sp=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,lv_sum)
+	if sp:GetCount()>0 then
 		Duel.SpecialSummon(sp,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
-
