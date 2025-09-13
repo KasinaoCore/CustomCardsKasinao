@@ -29,7 +29,7 @@ function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
 function s.thfilter(c)
-	return (c:IsType(TYPE_UNION) and c:IsAttribute(ATTRIBUTE_EARTH) and c:IsRace(RACE_MACHINE)) or (c:IsCode(133900005)) and c:IsAbleToHand()
+	return (c:IsType(TYPE_UNION) and c:IsAttribute(ATTRIBUTE_EARTH) and c:IsRace(RACE_MACHINE)) or (c:IsCode(133900004)) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
