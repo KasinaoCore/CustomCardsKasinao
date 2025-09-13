@@ -38,8 +38,6 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,0,1,99,nil)
 	-- Set the operation info for the special summon
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
-	-- Set the operation info for the cost (tribute)
-	Duel.SetOperationInfo(0,CATEGORY_TO_GRAVE,e:GetTargetCards(),1,tp,0)
 end
 
 -- Activation
