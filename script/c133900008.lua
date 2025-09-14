@@ -1,9 +1,8 @@
---Combat Scissors Beetle
--- in actuality, the id is 133900008, but we use this for testing purposes
+--Combat Scissors Beetle (K)
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
-    local FRONT_CHANGE_ID = 46411259
+    local FRONT_CHANGE_ID = 133900008
 	--Special summon condition
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)
