@@ -1,6 +1,14 @@
 --Combat Scissors Beetle
+local FRONT_CHANGE_ID = 46411259
+-- in actuality, the id is 133900008, but we use this for testing purposes
 local s,id=GetID()
 function s.initial_effect(c)
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_SINGLE)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e0:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e0:SetCondition(s.spsummoncon)
+	c:RegisterEffect(e0)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_DAMAGE)
@@ -19,6 +27,16 @@ function s.initial_effect(c)
 	e2:SetValue(1)
 	e2:SetCondition(s.actcon)
 	c:RegisterEffect(e2)
+end
+
+function s.spsummoncon(e,c,tp,eg,ep,ev,re,r,rp)
+	if r & REASON_EFFECT ~= 0 then
+		local cause_card = re:GetHandler()
+		if cause_card:GetCode() == FRONT_CHANGE_ID then
+			return true
+		end
+	end
+	return false
 end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler()
