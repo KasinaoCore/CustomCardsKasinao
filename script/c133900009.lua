@@ -21,10 +21,11 @@ function s.filter(c,e,tp)
 end
 
 function s.spfilter(c,lv,e,tp,mc)
-	return c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE)
-		and c:GetLevel()==lv
-		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0
-		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) -- allow improper as default
+    return c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE)
+        and c:GetLevel()==lv
+        and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0
+        and ((c:IsCode(133900007) or c:IsCode(133900008) and c:IsCanBeSpecialSummoned(e,0,tp,true,false))
+             or (not c:IsCode(133900007) and not c:IsCode(133900008) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)))
 end
 
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -46,7 +47,6 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local sc=g:GetFirst()
 	if sc then
 		Duel.BreakEffect()
-		-- Proper summon if ID matches, else improper
 		if sc:IsCode(133900007,133900008) then
 			if Duel.SpecialSummon(sc,0,tp,tp,true,false,POS_FACEUP)>0 then
 				sc:CompleteProcedure()
