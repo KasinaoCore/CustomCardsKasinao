@@ -57,8 +57,10 @@ function s.filter(c)
 	return c:IsCode(133900009) and c:IsAbleToHand()
 end
 function s.stg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,0,0)
+	if chk==0 then 
+		return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.sop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
