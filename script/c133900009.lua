@@ -12,6 +12,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 
+
 function s.filter(c,e,tp)
 	local lv=c:GetLevel()
 	return c:IsFaceup() and c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE) and c:IsAbleToExtra()
@@ -23,7 +24,7 @@ function s.spfilter(c,lv,e,tp,mc)
 	return c:IsType(TYPE_FUSION) and c:IsRace(RACE_MACHINE)
 		and c:GetLevel()==lv
 		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0
-		and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) -- allow improper as default
 end
 
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -42,9 +43,16 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.SendtoDeck(tc,nil,SEQ_DECKTOP,REASON_EFFECT)==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,lv,e,tp)
-	if #g>0 then
+	local sc=g:GetFirst()
+	if sc then
 		Duel.BreakEffect()
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
-        g:GetFirst():CompleteProcedure()
+		-- Proper summon if ID matches, else improper
+		if sc:IsCode(133900007,133900008) then
+			if Duel.SpecialSummon(sc,0,tp,tp,true,false,POS_FACEUP)>0 then
+				sc:CompleteProcedure()
+			end
+		else
+			Duel.SpecialSummon(sc,0,tp,tp,false,false,POS_FACEUP)
+		end
 	end
 end
