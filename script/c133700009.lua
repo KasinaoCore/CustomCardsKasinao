@@ -32,20 +32,30 @@ function s.filter(c)
     return c:IsType(TYPE_UNION) and c:IsLevelBelow(4) and c:IsAbleToRemove()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,3,nil) end
-    Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,3,tp,LOCATION_DECK)
+	if chk==0 then 
+		return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) 
+	end
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,tp,LOCATION_DECK)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
-    local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil)
-    if #g>=3 then
-        Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-        local sg=g:Select(tp,3,3,nil)
-        if Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)>0 then
-            for tc in aux.Next(sg) do
-                tc:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1)
-            end
-        end
-    end
+	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil)
+	if #g>0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+		local sg=Group.CreateGroup()
+		for i=1,3 do
+			local tg=g:Filter(function(c) 
+				return #sg==0 or not sg:IsExists(function(tc) return tc:GetCode()==c:GetCode() end,1,nil) 
+			end, nil)
+			if #tg==0 then break end
+			local tc=tg:Select(tp,1,1,nil):GetFirst()
+			sg:AddCard(tc)
+		end
+		if #sg>0 and Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)>0 then
+			for tc in aux.Next(sg) do
+				tc:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,1)
+			end
+		end
+	end
 end
 --Equip functions
 function s.eqfilter(c,ec)
