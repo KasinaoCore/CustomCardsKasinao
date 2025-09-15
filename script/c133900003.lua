@@ -9,11 +9,12 @@ function s.initial_effect(c)
 	e1:SetCost(s.cost)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	c:RegisterEffect(e1)
 end
 s.listed_series={SET_OJAMA}
 function s.costfilter(c)
-	return c:IsDiscardable() and c:IsAbleToGraveAsCost() and c:IsSetCard(SET_OJAMA)
+	return c:IsDiscardable() and c:IsAbleToGraveAsCost() and c:IsSetCard(SET_OJAMA) and c:IsMonsterCard()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.costfilter,tp,LOCATION_HAND,0,nil)
