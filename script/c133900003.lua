@@ -25,13 +25,20 @@ end
 
 function s.activation_legality(tp,e)
 	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil,e,tp)
-	local codes={}
+	local deck_codes={}
 	for tc in aux.Next(g) do
-		codes[tc:GetCode()]=true
+		deck_codes[tc:GetCode()]=true
 	end
-	local count=0
-	for _ in pairs(codes) do count=count+1 end
-	return count
+	local deck_count=0
+	for _ in pairs(deck_codes) do deck_count=deck_count+1 end
+	local h=Duel.GetMatchingGroup(s.costfilter,tp,LOCATION_HAND,0,nil)
+	local hand_codes={}
+	for tc in aux.Next(h) do
+		hand_codes[tc:GetCode()]=true
+	end
+	local hand_count=0
+	for _ in pairs(hand_codes) do hand_count=hand_count+1 end
+	return math.min(deck_count, hand_count)
 end
 
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
