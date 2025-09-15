@@ -36,14 +36,25 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local ft=math.min(Duel.GetLocationCount(tp,LOCATION_MZONE),3)
 	if ft<=0 then return end
 	if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
-	local ct=math.min(e:GetLabel(),ft) 
+	local ct=math.min(e:GetLabel(),ft)
 	if ct<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,ct,ct,nil,e,tp)
+	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_DECK,0,nil,e,tp)
+	local sg=aux.SelectUnselectGroup(g,e,tp,ct,ct,function(selected)
+		local names = {}
+		for sc in selected:Iter() do
+			if names[sc:GetCode()] then
+				return false
+			end
+			names[sc:GetCode()] = true
+		end
+		return true
+	end,1,tp,HINTMSG_SPSUMMON)
+
 	local c=e:GetHandler()
-	for tc in g:Iter() do
+	for tc in sg:Iter() do
 		if Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP_DEFENSE) then
-			--Cannot change its battle position
+			-- Cannot change its battle position
 			local e1=Effect.CreateEffect(c)
 			e1:SetDescription(3313)
 			e1:SetType(EFFECT_TYPE_SINGLE)
