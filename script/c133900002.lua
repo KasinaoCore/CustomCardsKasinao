@@ -34,6 +34,5 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
     local sg=Duel.SelectMatchingCard(tp,s.sp_filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
     if #sg>0 then
         Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
-
     end
 end
