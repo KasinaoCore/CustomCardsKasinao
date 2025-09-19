@@ -13,7 +13,6 @@ function s.initial_effect(c)
 end
 s.listed_names={133700058}
 
--- filter: Dragon SS this turn
 function s.ssfilter(c,tp)
 	return c:IsRace(RACE_DRAGON)
 		and c:IsControler(tp)
@@ -22,12 +21,10 @@ function s.ssfilter(c,tp)
 		and c:IsReleasable()
 end
 
--- condition: must control at least 1 valid tribute candidate
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(s.ssfilter,tp,LOCATION_MZONE,0,1,nil,tp)
 end
 
--- target: tribute 1 valid Dragon, then prepare to summon from Deck
 function s.filter(c,e,tp)
 	return c:IsCode(133700058) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
 end
@@ -43,15 +40,23 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 
--- operation: tribute the chosen Dragon, then summon the target monster
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) and Duel.Release(tc,REASON_COST)>0
-		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local sc=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
-		if sc then
-			Duel.SpecialSummon(sc,0,tp,tp,true,false,POS_FACEUP_ATTACK)
+	if tc and tc:IsRelateToEffect(e) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		local atk=tc:GetAttack()
+		if atk<0 then atk=0 end
+		if Duel.Release(tc,REASON_COST)>0 then
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+			local sc=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
+			if sc and Duel.SpecialSummon(sc,0,tp,tp,true,false,POS_FACEUP_ATTACK)>0 then
+				local e1=Effect.CreateEffect(e:GetHandler())
+				e1:SetType(EFFECT_TYPE_SINGLE)
+				e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+				e1:SetCode(EFFECT_SET_BASE_ATTACK)
+				e1:SetValue(atk+1000)
+				e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+				sc:RegisterEffect(e1)
+			end
 		end
 	end
 end
