@@ -26,11 +26,11 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return Duel.IsExistingMatchingCard(s.sp_filter,tp,LOCATION_DECK,0,1,nil,e,tp) end
-    Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
+    Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK+LOCATION_HAND+LOCATION_GRAVE)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-    local sg=Duel.SelectMatchingCard(tp,s.sp_filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+    local sg=Duel.SelectMatchingCard(tp,s.sp_filter,tp,LOCATION_DECK+LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,e,tp)
     if #sg>0 then
         Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
     end
