@@ -27,6 +27,11 @@ function s.initial_effect(c)
 	e2:SetValue(1)
 	e2:SetCondition(s.actcon)
 	c:RegisterEffect(e2)
+	--pierce damage
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(EFFECT_PIERCE)
+	c:RegisterEffect(e3)
 end
 function s.actcon(e)
 	return Duel.GetAttacker()==e:GetHandler()
