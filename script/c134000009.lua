@@ -16,6 +16,7 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_TOHAND)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_PHASE+PHASE_STANDBY)
+	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCondition(s.retcon)
 	e2:SetTarget(s.rettg)
 	e2:SetOperation(s.retop)
@@ -50,10 +51,10 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.retfilter(c)
-    return c:IsType(TYPE_NORMAL) and c:IsFaceup()
+    return c:IsType(TYPE_NORMAL) and c:IsAttribute(ATTRIBUTE_EARTH) and c:IsFaceup()
 end
 function s.retcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(aux.FaceupFilter(s.retfilter),tp,LOCATION_MZONE,0,1,nil)
+	return tp==Duel.GetTurnPlayer() and Duel.IsExistingMatchingCard(aux.FaceupFilter(s.retfilter),tp,LOCATION_MZONE,0,1,nil)
 end
 function s.rettg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
