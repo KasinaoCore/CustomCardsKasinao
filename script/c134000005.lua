@@ -1,8 +1,9 @@
 --Mask of Shine & Dark (K)
+--Passcode: 134000006
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
-	--attribute
+	--Attribute
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -24,6 +25,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
 end
+s.listed_names={134000006}
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return re:IsMonsterEffect()
 end
