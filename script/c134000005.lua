@@ -14,31 +14,61 @@ function s.initial_effect(c)
 	--Negate
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
-	e2:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
-	e2:SetType(EFFECT_TYPE_QUICK_F)
-	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_NO_TURN_RESET)
-	e2:SetCountLimit(1,id)
+	e2:SetCategory(CATEGORY_EQUIP)
+	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_CHAINING)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,id)
 	e2:SetCondition(s.condition)
-	e2:SetTarget(s.target)
-	e2:SetOperation(s.operation)
+	e2:SetTarget(s.eqtarget)
+	e2:SetOperation(s.eqoperation)
 	c:RegisterEffect(e2)
 end
 s.listed_names={134000006}
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return re:IsMonsterEffect()
+	return re:IsActiveType(TYPE_MONSTER) and Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_PLAYER)~=tp
 end
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
-		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
-	end
+function s.eqtarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local rc=re:GetHandler()
+	if chkc then return chkc==rc end
+	if chk==0 then return rc:IsFaceup() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
+	Duel.SetTargetCard(rc)
+	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
 end
-function s.operation(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetCurrentChain()~=ev+1 then return	end
-	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
-		Duel.Destroy(eg,REASON_EFFECT)
+function s.eqoperation(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local tc=Duel.GetFirstTarget()
+	if not c:IsRelateToEffect(e) or c:IsFacedown() or c:IsLocation(LOCATION_SZONE) then return end
+	if not tc or not tc:IsFaceup() or Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then
+		Duel.SendtoGrave(c,REASON_EFFECT)
+		return
 	end
+	Duel.Equip(tp,c,tc,true)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_EQUIP_LIMIT)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+	e1:SetLabelObject(tc)
+	e1:SetValue(s.eqlimit)
+	c:RegisterEffect(e1)
+	--Atk up
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_EQUIP)
+	e2:SetCode(EFFECT_UPDATE_ATTACK)
+	e2:SetValue(-900)
+	c:RegisterEffect(e2)
+	--Def up
+	local e3=e2:Clone()
+	e3:SetCode(EFFECT_UPDATE_DEFENSE)
+	c:RegisterEffect(e3)
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_EQUIP)
+	e4:SetCode(EFFECT_DISABLE)
+	e4:SetReset(RESET_EVENT|RESETS_STANDARD)
+	c:RegisterEffect(e4)
+end
+function s.eqlimit(e,c)
+	return c==e:GetLabelObject()
 end
