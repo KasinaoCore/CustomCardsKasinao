@@ -40,15 +40,17 @@ function s.cfilter(c,attr)
 	return c:IsType(TYPE_MONSTER) and not c:IsType(TYPE_RITUAL) and c:IsAttribute(attr) and c:IsAbleToRemoveAsCost()
 end
 
-function s.thfilter(c)
-	return (c:IsCode(id) or c:IsCode(134000005)) and c:IsAbleToHand()
-end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and s.thfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(s.thfilter,tp,LOCATION_GRAVE,0,2,nil) end
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then 
+		return Duel.IsExistingTarget(Card.IsCode,tp,LOCATION_GRAVE,0,1,nil,134000005)
+			and Duel.IsExistingTarget(Card.IsCode,tp,LOCATION_GRAVE,0,1,nil,id)
+	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectTarget(tp,s.thfilter,tp,LOCATION_GRAVE,0,2,2,nil)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,2,0,0)
+	local g1=Duel.SelectTarget(tp,Card.IsCode,tp,LOCATION_GRAVE,0,1,1,nil,134000005)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g2=Duel.SelectTarget(tp,Card.IsCode,tp,LOCATION_GRAVE,0,1,1,nil,id)
+	g1:Merge(g2)
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g1,2,0,0)
 end
 
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
