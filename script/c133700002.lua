@@ -1,6 +1,7 @@
---Nails of Bane (Kasinao)
+--Nails of Bane (K))
 local s,id=GetID()
 function s.initial_effect(c)
+	aux.AddEquipProcedure(c,nil,s.filter)
 	--destroy sub
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_EQUIP)
@@ -22,14 +23,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetValue(68540058)
 	c:RegisterEffect(e2)
-	--equip limit
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetCode(EFFECT_EQUIP_LIMIT)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e3:SetValue(s.eqlimit)
-	c:RegisterEffect(e3)
 end
-function s.eqlimit(e,c)
-	return (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_FIEND)) and (c:IsAttribute(ATTRIBUTE_DARK) and c:IsNonEffectMonster())
+function s.filter(c)
+	return c:IsAttribute(ATTRIBUTE_DARK) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_FIEND)) and c:IsNonEffectMonster()
 end
