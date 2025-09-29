@@ -17,7 +17,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 end
-s.listed_series={SET_GOBLIN}
+s.listed_series={0x803}
 s.listed_names={id}
 function s.gyspfilter(c,e,tp)
 	return c:IsKasinaoDrone() and not c:IsCode(id)
