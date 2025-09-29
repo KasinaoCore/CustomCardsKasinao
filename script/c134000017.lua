@@ -1,4 +1,4 @@
---Drone Scud (K)
+--Scud Drone (K)
 local s,id=GetID()
 Duel.LoadScript("c1337.lua")
 function s.initial_effect(c)
