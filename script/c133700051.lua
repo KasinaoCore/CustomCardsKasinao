@@ -29,7 +29,7 @@ function s.initial_effect(c)
 end
 s.listed_names={133700050,6500778}
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsCode(133700050) or c:IsCode(6500778)
+	return c:IsFaceup() and (c:IsCode(133700050) or c:IsCode(6500778))
 end
 function s.spcon(e,c)
 	if c==nil then return true end
@@ -43,7 +43,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(c,REASON_COST+REASON_DISCARD)
 end
 function s.filter(c)
-	return c:IsCode(133700050) and c:IsAbleToHand()
+	return (c:IsCode(133700050) or c:IsCode(6500778)) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) 
