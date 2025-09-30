@@ -37,19 +37,19 @@ function s.spcon(e,c)
 end
 function s.repfilter(c,tp,e)
     return c:IsControler(tp) and c:IsFaceup() 
-        and c:IsSetCard(0x501) and c:IsLocation(LOCATION_ONFIELD)
+        and (c:IsSetCard(0x501) or c:IsCode(6500778)) and c:IsLocation(LOCATION_ONFIELD)
         and c:IsReason(REASON_EFFECT+REASON_BATTLE) 
         and not c:IsReason(REASON_REPLACE)
-        and c~=e:GetHandler() -- Critical fix: Exclude itself
+        and c~=e:GetHandler()
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
     local c=e:GetHandler()
-    if chk==0 then return eg:IsExists(s.repfilter,1,nil,tp,e) -- Pass 'e' to filter
+    if chk==0 then return eg:IsExists(s.repfilter,1,nil,tp,e)
         and c:IsDestructable() end
     return Duel.SelectEffectYesNo(tp,c,96)
 end
 function s.repval(e,c)
-    return s.repfilter(c,e:GetHandlerPlayer(),e) -- Pass 'e' to filter
+    return s.repfilter(c,e:GetHandlerPlayer(),e)
 end
 function s.repop(e,tp,eg,ep,ev,re,r,rp)
     Duel.Destroy(e:GetHandler(),REASON_EFFECT+REASON_REPLACE)
