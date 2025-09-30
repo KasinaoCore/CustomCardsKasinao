@@ -1,3 +1,4 @@
+--Commandrone Double Sniper
 local s,id=GetID()
 Duel.LoadScript("c1337.lua")
 function s.initial_effect(c)
@@ -10,6 +11,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
     --direct attack
 	local e2=Effect.CreateEffect(c)
+	e2:SetCondition(s.dacon)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_DIRECT_ATTACK)
 	c:RegisterEffect(e2)
@@ -27,6 +29,7 @@ function s.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCode(EVENT_ATTACK_DISABLED)
+    e4:SetCondition(s.ctcon)
 	e4:SetOperation(s.ctop)
 	c:RegisterEffect(e4)
 	local e5=e4:Clone()
@@ -36,8 +39,8 @@ function s.initial_effect(c)
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,1))
 	e6:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+    e6:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e6:SetType(EFFECT_TYPE_QUICK_O)
-	e6:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e6:SetCode(EVENT_CHAINING)
 	e6:SetRange(LOCATION_MZONE)
 	e6:SetCondition(s.negcon)
@@ -47,11 +50,22 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 s.counter_place_list={0x1952}
+function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
+	return re and not re:GetHandler():IsCode(id)
+end 
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():AddCounter(0x1952,1)
+	local c = e:GetHandler()
+	if c:GetCounter(0x1952) >= 2 then return end
+	if Duel.GetFlagEffect(0, id+10000) > 0 then
+		return
+	end
+	c:AddCounter(0x1952,1)
+end
+function s.dacon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetCounter(0x1952)>=1
 end
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetAttackTarget()==nil and e:GetHandler():GetCounter(0x1952)>=1 and e:GetHandler():IsHasEffect(EFFECT_DIRECT_ATTACK)
+	return Duel.GetAttackTarget()==nil and e:GetHandler():IsHasEffect(EFFECT_DIRECT_ATTACK)
 		and Duel.IsExistingMatchingCard(aux.NOT(Card.IsHasEffect),tp,0,LOCATION_MZONE,1,nil,EFFECT_IGNORE_BATTLE_TARGET)
 end
 function s.atkop(e,tp,eg,ep,ev,re,r,rp)
@@ -89,7 +103,12 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) and Duel.Destroy(eg,REASON_EFFECT)>0 then
+	local c = e:GetHandler()
+	Duel.RegisterFlagEffect(0,id+10000,RESET_CHAIN,0,1)
+	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re)
+		and Duel.Destroy(eg,REASON_EFFECT) > 0 then
 		Duel.Damage(1-tp,1000,REASON_EFFECT)
 	end
 end
+
+
