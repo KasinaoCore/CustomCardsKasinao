@@ -26,9 +26,9 @@ function s.initial_effect(c)
     e2:SetOperation(s.thop)
     c:RegisterEffect(e2)
 end
-s.listed_names={133700050}
+s.listed_names={133700050,6500778}
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsCode(133700050)
+	return c:IsFaceup() and c:IsCode(133700050) or c:IsCode(6500778)
 end
 function s.spcon(e,c)
 	if c==nil then return true end
