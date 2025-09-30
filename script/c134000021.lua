@@ -56,7 +56,7 @@ end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
 	local c = e:GetHandler()
 	if c:GetCounter(0x1952) >= 2 then return end
-	if Duel.GetFlagEffect(0, id+10000) > 0 then
+	if c:GetFlagEffect(1) > 0 then
 		return
 	end
 	c:AddCounter(0x1952,1)
@@ -104,7 +104,7 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
 	local c = e:GetHandler()
-	Duel.RegisterFlagEffect(0,id+10000,RESET_CHAIN,0,1)
+	c:RegisterFlagEffect(1,RESET_CHAIN,0,1)
 	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re)
 		and Duel.Destroy(eg,REASON_EFFECT) > 0 then
 		Duel.Damage(1-tp,1000,REASON_EFFECT)
