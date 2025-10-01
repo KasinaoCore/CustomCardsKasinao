@@ -13,7 +13,7 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_DAMAGE)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e2:SetProperty(EFFECT_FLAG_DELAY)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
 	e2:SetRange(LOCATION_SZONE)
 	e2:SetCountLimit(1,id)
 	e2:SetCondition(s.damcon)
@@ -36,7 +36,7 @@ function s.initial_effect(c)
 end
 
 function s.filter(c,tp)
-	return c:IsFaceup() and c:IsKasinaoDrone() and c:IsControler(tp) and c:IsPreviousControler(tp)
+	return c:IsFaceup() and c:IsKasinaoDrone() and c:IsControler(tp) and c:IsPreviousControler(tp) and not c:IsSummonLocation(LOCATION_EXTRA)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.filter,1,nil,tp)
