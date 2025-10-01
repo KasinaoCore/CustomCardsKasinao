@@ -7,7 +7,7 @@ function s.initial_effect(c)
     e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
     e1:SetType(EFFECT_TYPE_IGNITION)
     e1:SetRange(LOCATION_GRAVE)
-    e1:SetCountLimit(1,{id,1}) -- Once per Duel
+    e1:SetCountLimit(1,{id,1}) 
     e1:SetCondition(s.spcon)
     e1:SetCost(s.spcost)
     e1:SetTarget(s.sptg)
