@@ -2,7 +2,6 @@
 Duel.LoadScript("c1337.lua")
 local s,id=GetID()
 function s.initial_effect(c)
-	c:EnableCounterPermit(0x1952)
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
