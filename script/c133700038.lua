@@ -1,4 +1,4 @@
--- Drawler
+-- Drawler (K)
 local s,id=GetID()
 function s.initial_effect(c)
 	-- Place cards from hand to bottom of Deck in any order and gain ATK/DEF
