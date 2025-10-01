@@ -1,0 +1,48 @@
+--Captain Lock (K)
+local s,id=GetID()
+function s.initial_effect(c)
+	--fusion material
+	c:EnableReviveLimit()
+	Fusion.AddProcMix(c,false,false,15653824,s.ffilter)
+	--Special Summon condition
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_SINGLE)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e0:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e0:SetValue(aux.fuslimit)
+	c:RegisterEffect(e0)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_CANNOT_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetTargetRange(1,1)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetTarget(s.limit)
+	c:RegisterEffect(e1)
+	local e2=e1:Clone()
+	e2:SetCode(EFFECT_CANNOT_MSET)
+	c:RegisterEffect(e2)
+	local e4=e1:Clone()
+	e4:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	c:RegisterEffect(e4)
+	--selfdestroy
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCode(EFFECT_SELF_TOGRAVE)
+	e3:SetCondition(s.descon)
+	c:RegisterEffect(e3)
+end
+function s.ffilter(c,fc,sumtype,tp)
+	return c:IsAttribute(ATTRIBUTE_WATER) and c:IsLevelBelow(4)
+end
+function s.limit(e,c,tp,sumtp,sumpos)
+	return c:IsLocation(LOCATION_HAND)
+end
+function s.desfilter(c)
+	 return c:IsFaceup() and c:IsAttackAbove(1000)
+end
+function s.descon(e)
+	return Duel.IsExistingMatchingCard(s.desfilter,e:GetHandlerPlayer(),LOCATION_MZONE,LOCATION_MZONE,1,nil)
+end
