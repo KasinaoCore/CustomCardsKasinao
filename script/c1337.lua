@@ -22,7 +22,9 @@ end
 KasinaoArchetype = {}
 
 KasinaoArchetype.Drone = {
-	756652 -- Doron
+	756652, -- Doron
+	4474060. -- SPYRAL Gear - Drone
+	24610207 -- Star Drawing
 }
 
 Card.IsKasinaoDrone = MakeCheck({0x803}, KasinaoArchetype.Drone)
