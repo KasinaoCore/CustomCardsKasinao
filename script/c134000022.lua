@@ -28,7 +28,7 @@ function s.initial_effect(c)
 	e3:SetRange(LOCATION_SZONE)
     e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
     e3:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e2:SetCountLimit(1,{id,1})
+	e3:SetCountLimit(1,{id,1})
     e3:SetCondition(s.atkcon)
     e3:SetTarget(s.atktg)
     e3:SetOperation(s.atkop)
@@ -36,17 +36,15 @@ function s.initial_effect(c)
 end
 
 function s.filter(c,tp)
-	return c:IsFaceup() and c:IsKasinaoDrone() and c:IsControler(tp) and c:IsPreviousControler(tp) and not c:IsSummonLocation(LOCATION_EXTRA)
+	return c:IsFaceup() and c:IsKasinaoDrone() and c:IsControler(tp) and not c:IsSummonLocation(LOCATION_EXTRA)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.filter,1,nil,tp)
 end
-function s.cfilter(c,eg,tp)
-	return eg:Filter(s.filter,nil,tp):IsContains(c)
-end
 function s.damcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.filter,1,false,nil,nil,tp,eg) end
-	local g=Duel.SelectReleaseGroupCost(tp,s.filter,1,1,false,nil,nil,tp,eg)
+	if chk==0 then return eg:IsExists(s.filter,1,nil,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
+	local g=eg:FilterSelect(tp, s.filter,1,1,nil,tp)
 	local atk=g:GetFirst():GetAttack()
 	Duel.Release(g,REASON_COST)
 	e:SetLabel(atk)
