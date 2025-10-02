@@ -27,7 +27,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0x803}
 function s.spfilter(c)
-    return c:IsFaceup() and c:IsKasinaoDrone() and c:Type(TYPE_MONSTER)
+    return c:IsFaceup() and c:IsKasinaoDrone() and c:IsType(TYPE_MONSTER)
 end
 function s.spcon(e,c)
 	if c==nil then return true end
