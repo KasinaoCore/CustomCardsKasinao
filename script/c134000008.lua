@@ -11,6 +11,7 @@ function s.initial_effect(c)
 	e1:SetCountLimit(1)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetTarget(s.target)
+	e1:SetCondition(s.condition)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 	--Chain attack
@@ -24,6 +25,9 @@ function s.initial_effect(c)
 end
 function s.filter(c)
 	return c:IsDestructable() and c:IsSpellTrap()
+end
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and s.filter(chkc) and chkc~=e:GetHandler() end
