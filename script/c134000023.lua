@@ -16,7 +16,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.ctop)
 	c:RegisterEffect(e2)
 end
-function s.filter(c)
+function s.filter(c,tp)
 	return c:IsLevelBelow(4) and c:IsRace(RACE_MACHINE) and c:IsAttribute(ATTRIBUTE_WIND) and c:IsAbleToHand()
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
@@ -29,11 +29,11 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,sg)
 	end
 end
-function s.ctfilter(c)
-	return c:IsKasinaoDrone() and c:IsSummonLocation(LOCATION_EXTRA)
+function s.ctfilter(c,tp)
+	return c:IsKasinaoDrone() and c:IsSummonLocation(LOCATION_EXTRA) and c:GetOwner()==tp
 end
 function s.ctop(e,tp,eg,ep,ev,re,r,rp)
-	local g=eg:Filter(s.ctfilter,nil)
+	local g=eg:Filter(s.ctfilter,nil,tp)
 	for tc in aux.Next(g) do
 		if tc:IsFaceup() and tc:IsCanAddCounter(0x1952,1) then
 			tc:AddCounter(0x1952,1)
