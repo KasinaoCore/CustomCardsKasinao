@@ -32,7 +32,7 @@ end
 function s.eqtarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local rc=re:GetHandler()
 	if chkc then return chkc==rc end
-	if chk==0 then return rc:IsFaceup() and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
+	if chk==0 then return rc:IsFaceup() and rc:IsLocation(LOCATION_MZONE) and Duel.GetLocationCount(tp,LOCATION_SZONE)>0 end
 	Duel.SetTargetCard(rc)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
 end
@@ -40,7 +40,7 @@ function s.eqoperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() or c:IsLocation(LOCATION_SZONE) then return end
-	if not tc or not tc:IsFaceup() or Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then
+	if not tc or not tc:IsFaceup() or not tc:IsLocation(LOCATION_MZONE) or Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then
 		Duel.SendtoGrave(c,REASON_EFFECT)
 		return
 	end
