@@ -13,55 +13,51 @@ function s.initial_effect(c)
     e1:SetOperation(s.spop)
     e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
     c:RegisterEffect(e1)
-    -- Name and Level change effect
-    local e2=Effect.CreateEffect(c)
-    e2:SetDescription(aux.Stringid(id,1))
-    e2:SetType(EFFECT_TYPE_IGNITION)
-    e2:SetRange(LOCATION_MZONE)
-    e2:SetCountLimit(1)
-    e2:SetTarget(s.lvtg)
-    e2:SetOperation(s.lvop)
-    c:RegisterEffect(e2)
+	--Name becomes "Supay" while on the field on in GY
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e2:SetCode(EFFECT_CHANGE_CODE)
+	e2:SetRange(LOCATION_MZONE|LOCATION_GRAVE)
+	e2:SetValue(78552773)
+	c:RegisterEffect(e2)
+    -- Level change effect
+    local e3=Effect.CreateEffect(c)
+    e3:SetDescription(aux.Stringid(id,1))
+    e3:SetType(EFFECT_TYPE_IGNITION)
+    e3:SetCategory(CATEGORY_LVCHANGE)
+    e3:SetRange(LOCATION_MZONE)
+    e3:SetCountLimit(1)
+    e3:SetTarget(s.lvtg)
+    e3:SetOperation(s.lvop)
+    c:RegisterEffect(e3)
 end
--- Special Summon condition
 function s.spcon(e,c)
     if c==nil then return true end
     local tp=c:GetControler()
     return Duel.GetLP(tp)>=1000
         and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_MZONE,0,1,nil)
 end
--- Special Summon filter (non-DARK Synchro Monster)
 function s.spfilter(c)
     return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and not c:IsAttribute(ATTRIBUTE_DARK)
 end
--- Special Summon operation (pay 1000 LP)
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
     Duel.PayLPCost(tp,1000)
 end
--- Level change effect
 function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk)
     if chk==0 then return true end
     Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_LVRANK)
     local lv=Duel.AnnounceNumber(tp,1,2,3,4,5,6,7,8)
     e:SetLabel(lv)
 end
--- Level change operation
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
     if c:IsRelateToEffect(e) and c:IsFaceup() then
-        -- Change name to "Supay"
         local e1=Effect.CreateEffect(c)
         e1:SetType(EFFECT_TYPE_SINGLE)
-        e1:SetCode(EFFECT_CHANGE_CODE)
-        e1:SetValue(78552773)
+        e1:SetCode(EFFECT_CHANGE_LEVEL)
+        e1:SetValue(e:GetLabel())
         e1:SetReset(RESETS_STANDARD+RESET_PHASE+PHASE_END)
         c:RegisterEffect(e1)
-        -- Change Level
-        local e2=Effect.CreateEffect(c)
-        e2:SetType(EFFECT_TYPE_SINGLE)
-        e2:SetCode(EFFECT_CHANGE_LEVEL)
-        e2:SetValue(e:GetLabel())
-        e2:SetReset(RESETS_STANDARD+RESET_PHASE+PHASE_END)
-        c:RegisterEffect(e2)
     end
 end
