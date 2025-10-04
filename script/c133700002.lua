@@ -1,4 +1,4 @@
---Nails of Bane (K))
+--Nails of Bane (K)
 local s,id=GetID()
 function s.initial_effect(c)
 	aux.AddEquipProcedure(c,nil,s.filter)
@@ -25,5 +25,5 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.filter(c)
-	return c:IsAttribute(ATTRIBUTE_DARK) and (c:IsRace(RACE_DRAGON) or c:IsRace(RACE_FIEND)) and c:IsNonEffectMonster()
+	return c:IsAttribute(ATTRIBUTE_DARK) and c:IsNonEffectMonster()
 end
