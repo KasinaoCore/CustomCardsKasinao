@@ -47,17 +47,20 @@ function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
-    local c=e:GetHandler()
-    local tc=Duel.GetFirstTarget()
-    if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) and tc:IsFaceup() then
-        local e1=Effect.CreateEffect(c)
-        e1:SetType(EFFECT_TYPE_SINGLE)
-        e1:SetCode(EFFECT_CHANGE_LEVEL)
-        e1:SetValue(5-tc:GetLevel())
-        e1:SetReset(RESETS_STANDARD)
-        c:RegisterEffect(e1)
-    end
+	local c=e:GetHandler()
+	local tc=Duel.GetFirstTarget()
+	if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) and tc:IsFaceup() then
+		local targetLevel = math.max(1, tc:GetLevel())
+		local clampedlevel = math.max(1, 5 - targetLevel)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_CHANGE_LEVEL)
+		e1:SetValue(clampedlevel)
+		e1:SetReset(RESETS_STANDARD)
+		c:RegisterEffect(e1)
+	end
 end
+
 
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(s.desfilter,tp,0,LOCATION_MZONE,1,nil) end
