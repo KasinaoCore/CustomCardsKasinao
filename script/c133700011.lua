@@ -30,7 +30,6 @@ function s.initial_effect(c)
     c:RegisterEffect(e2)
 end
 
--- Level adjustment functions
 function s.lvfilter(c)
     return c:IsFaceup() and c:GetLevel()>0 and c:GetLevel()<=4
 end
@@ -54,14 +53,13 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp)
     end
 end
 
--- Destruction effect functions
 function s.descon(e,tp,eg,ep,ev,re,r,rp)
     local rc=e:GetHandler():GetReasonCard()
     return r==REASON_SYNCHRO and (rc:IsAttribute(ATTRIBUTE_DARK) or rc:IsAttribute(ATTRIBUTE_EARTH) or rc:IsAttribute(ATTRIBUTE_WATER))
 end
 
 function s.synchrofilter(c)
-    return c:IsFaceup() and c:IsSummonLocation(LOCATION_EXTRA)
+    return c:IsFaceup() and c:IsOnField()
 end
 
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
