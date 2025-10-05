@@ -1,35 +1,39 @@
---Blizzard Lizard (Kasinao)
+--Blizzard Lizard (K))
 local s,id=GetID()
 function s.initial_effect(c)
-	--Special Summon a "Dark Tuner" monster from your Hand
+	--special summon 1 dark tuner
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_FLIP+EFFECT_TYPE_TRIGGER_O)
-	e1:SetProperty(EFFECT_FLAG_DELAY)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetCode(EVENT_SUMMON_SUCCESS)
+	e1:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP)
 	e1:SetCountLimit(1,id)
-	e1:SetTarget(s.dsptg)
-	e1:SetOperation(s.dspop)
+	e1:SetTarget(s.sptg)
+	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
-    --damage
-	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,0))
-	e2:SetCategory(CATEGORY_DAMAGE)
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-    e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e2:SetCode(EVENT_BATTLE_DESTROYED)
-	e2:SetCondition(s.damcon)
-	e2:SetTarget(s.damtg)
-	e2:SetOperation(s.damop)
+	local e2=e1:Clone()
+	e2:SetCode(EVENT_FLIP)
 	c:RegisterEffect(e2)
+    --damage
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetCategory(CATEGORY_DAMAGE)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+    e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCode(EVENT_BATTLE_DESTROYED)
+	e3:SetCondition(s.damcon)
+	e3:SetTarget(s.damtg)
+	e3:SetOperation(s.damop)
+	c:RegisterEffect(e3)
 end
 s.listed_series={0x600}
-function s.dsptg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 		and Duel.IsExistingMatchingCard(s.dspfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
 end
-function s.dspop(e,tp,eg,ep,ev,re,r,rp)
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local sg=Duel.SelectMatchingCard(tp,s.dspfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
@@ -41,7 +45,7 @@ end
 function s.dspfilter(c,e,tp)
 	return c:IsSetCard(0x600) and c:IsMonster() and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
---Damage Functions
+--damage effect
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsLocation(LOCATION_GRAVE) and e:GetHandler():IsReason(REASON_BATTLE)
 end
