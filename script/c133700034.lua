@@ -1,4 +1,4 @@
---Rebirth Wedju
+--Rebirth Tablet (K)
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -35,6 +35,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp,tc:GetLevel())
 	if #g>0 then
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		Duel.SpecialSummon(g,0,tp,tp,false,false,tc:GetPreviousPosition())
 	end
 end
