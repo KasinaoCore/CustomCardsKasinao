@@ -15,6 +15,7 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_GRAVE)
+	e1:SetCountLimit(1,id)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
@@ -25,24 +26,25 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1)
+	e2:SetCountLimit(1,{id,1})
 	e2:SetTarget(s.lvtg)
 	e2:SetOperation(s.lvop)
 	c:RegisterEffect(e2)
 	--deckdes
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetDescription(aux.Stringid(id,3))
 	e3:SetCategory(CATEGORY_DECKDES)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_BE_MATERIAL)
 	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetCountLimit(1,{id,2})
 	e3:SetCondition(s.ddcon)
 	e3:SetTarget(s.ddtg)
 	e3:SetOperation(s.ddop)
 	c:RegisterEffect(e3)
 end
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsRace(RACE_INSECT) and c:GetLevel()>=3 and c:IsSetCard(0x600)
+	return c:IsFaceup() and c:IsRace(RACE_INSECT) and c:GetLevel()>=3
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.cfilter(chkc) end
@@ -67,7 +69,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 end
 function s.lvfilter(c,lv)
-	return c:IsFaceup() c:IsRace(RACE_INSECT) and not c:IsLevel(lv) and c:IsLevelAbove(1)
+	return c:IsFaceup() and c:IsRace(RACE_INSECT) and not c:IsLevel(lv) and c:IsLevelAbove(1)
 end
 function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local lv=e:GetHandler():GetLevel()
@@ -88,14 +90,14 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
-function s.drcon(e,tp,eg,ep,ev,re,r,rp)
+function s.ddcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsLocation(LOCATION_GRAVE) and r==REASON_SYNCHRO
 		and e:GetHandler():GetReasonCard():IsAttribute(ATTRIBUTE_DARK)
 end
 function s.ddtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DECKDES,nil,0,1-tp,5)
+	Duel.SetOperationInfo(0,CATEGORY_DECKDES,nil,0,1-tp,1)
 end
 function s.ddop(e,tp,eg,ep,ev,re,r,rp)
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
