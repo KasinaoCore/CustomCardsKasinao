@@ -4,12 +4,12 @@ function s.initial_effect(c)
     -- Special Summon from hand or GY
     local e1=Effect.CreateEffect(c)
     e1:SetDescription(aux.Stringid(id,0))
-    e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-    e1:SetType(EFFECT_TYPE_IGNITION)
-    e1:SetRange(LOCATION_GRAVE+LOCATION_HAND)
-    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_DUEL)
+    e1:SetType(EFFECT_TYPE_FIELD)
+    e1:SetCode(EFFECT_SPSUMMON_PROC)
+    e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+    e1:SetRange(LOCATION_HAND+LOCATION_GRAVE)
+  	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_DUEL)
     e1:SetCondition(s.spcon)
-    e1:SetCost(s.spcost)
     e1:SetTarget(s.sptg)
     e1:SetOperation(s.spop)
     c:RegisterEffect(e1)
@@ -32,33 +32,35 @@ function s.initial_effect(c)
 	e4:SetValue(function(e,c) return c and not (c:IsRace(RACE_MACHINE) or c:IsSetCard(SET_EARTHBOUND)) end)
 	c:RegisterEffect(e4)
 end
--- No monsters control check
-function s.spcon(e,tp)
-    return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0
-end
--- Discard machine as cost
-function s.costfilter(c)
+function s.spfilter(c)
     return c:IsRace(RACE_MACHINE) and c:IsDiscardable()
 end
-function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_HAND,0,1,nil) end
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
-    local g=Duel.SelectMatchingCard(tp,s.costfilter,tp,LOCATION_HAND,0,1,1,nil)
-    Duel.SendtoGrave(g,REASON_COST+REASON_DISCARD)
+function s.spcon(e,c)
+	if c==nil then return true end
+	local tp=c:GetControler()
+	if Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)~=0 
+		or Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then
+		return false
+	end
+	return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_HAND,0,1,e:GetHandler())
 end
--- Special Summon target
-function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
-    Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,c)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
+	local rg=Duel.GetMatchingGroup(s.spfilter,tp,LOCATION_HAND,0,e:GetHandler())
+	local g=aux.SelectUnselectGroup(rg,e,tp,1,1,aux.ChkfMMZ(1),1,tp,HINTMSG_DISCARD,nil,nil,true)
+	if #g>0 then
+		g:KeepAlive()
+		e:SetLabelObject(g)
+		return true
+	end
+	return false
 end
--- Special Summon operation
-function s.spop(e,tp,eg,ep,ev,re,r,rp)
-    local c=e:GetHandler()
-    if c:IsRelateToEffect(e) then
-        Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
-    end	
+function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=e:GetLabelObject()
+	if not g then return end
+	Duel.SendtoGrave(g,REASON_DISCARD|REASON_COST)
+	g:DeleteGroup()
 end
--- Level change operation
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
     if c:IsRelateToEffect(e) then
