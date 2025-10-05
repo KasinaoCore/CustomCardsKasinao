@@ -1,13 +1,13 @@
 --Dark Tuner - Doom Submarine
 local s,id=GetID()
 function s.initial_effect(c)
-    -- Special Summon from GY
+    -- Special Summon from hand or GY
     local e1=Effect.CreateEffect(c)
     e1:SetDescription(aux.Stringid(id,0))
     e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
     e1:SetType(EFFECT_TYPE_IGNITION)
-    e1:SetRange(LOCATION_GRAVE)
-    e1:SetCountLimit(1,{id,1}) 
+    e1:SetRange(LOCATION_GRAVE+LOCATION_HAND)
+    e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_DUEL)
     e1:SetCondition(s.spcon)
     e1:SetCost(s.spcost)
     e1:SetTarget(s.sptg)
