@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function s.spfilter(c)
-    return c:IsRace(RACE_MACHINE) and c:IsDiscardable()
+    return c:IsRace(RACE_MACHINE) and c:IsAttribute(ATTRIBUTE_DARK) and c:IsDiscardable()
 end
 function s.spcon(e,c)
 	if c==nil then return true end
