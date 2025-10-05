@@ -4,7 +4,7 @@ function s.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
 	c:SetUniqueOnField(1,0,id)
-	Fusion.AddProcMix(c,false,false,15653824,s.ffilter)
+	Fusion.AddProcMix(c,true,true,15653824,s.ffilter)
 	--Special Summon condition
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)
