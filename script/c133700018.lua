@@ -1,4 +1,4 @@
---Dark Tuner Dark Goddess Wittaka
+--Dark Tuner Dark Goddess Witaka (K)
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
@@ -44,20 +44,36 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
     Duel.PayLPCost(tp,1000)
 end
+function s.lvfilter(c)
+	return c:IsFaceup() and c:IsLevelAbove(6)
+end
 function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk)
-    if chk==0 then return true end
-    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_LVRANK)
-    local lv=Duel.AnnounceNumber(tp,1,2,3,4,5,6,7,8)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.desfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.lvfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	local g=Duel.SelectTarget(tp,s.lvfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_LVRANK)
+    local lv=Duel.AnnounceNumber(tp,1,2,3,4,5)
     e:SetLabel(lv)
 end
 function s.lvop(e,tp,eg,ep,ev,re,r,rp)
+    local tc=Duel.GetFirstTarget()
     local c=e:GetHandler()
-    if c:IsRelateToEffect(e) and c:IsFaceup() then
-        local e1=Effect.CreateEffect(c)
+    local rdlv = e:GetLabel()
+    if tc:IsRelateToEffect(e) and aux.FaceupFilter(tc,c) then
+        local e1=Effect.CreateEffect(tc)
+        e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
         e1:SetType(EFFECT_TYPE_SINGLE)
-        e1:SetCode(EFFECT_CHANGE_LEVEL)
-        e1:SetValue(e:GetLabel())
-        e1:SetReset(RESETS_STANDARD+RESET_PHASE+PHASE_END)
-        c:RegisterEffect(e1)
-    end
+        e1:SetCode(EFFECT_UPDATE_LEVEL)
+        e1:SetValue(-rdlv)
+        e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+        tc:RegisterEffect(e1)
+		local lv2=tc:GetLevel()
+		local e2=Effect.CreateEffect(c)
+        e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetCode(EFFECT_CHANGE_LEVEL)
+		e2:SetValue(lv2)
+		e2:SetReset(RESET_EVENT|RESETS_STANDARD)
+		c:RegisterEffect(e2)
+	end
 end
