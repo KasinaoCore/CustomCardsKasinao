@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
     c:EnableReviveLimit()
-    -- Special Summon procedure
+    --special Summon procedure
     local e1=Effect.CreateEffect(c)
     e1:SetDescription(aux.Stringid(id,0))
     e1:SetType(EFFECT_TYPE_FIELD)
@@ -13,7 +13,7 @@ function s.initial_effect(c)
     e1:SetOperation(s.spop)
     e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
     c:RegisterEffect(e1)
-	--Name becomes "Supay" while on the field on in GY
+	--name becomes "Supay" while on the field on in GY
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE|LOCATION_GRAVE)
 	e2:SetValue(78552773)
 	c:RegisterEffect(e2)
-    -- Level change effect
+    --level change effect
     local e3=Effect.CreateEffect(c)
     e3:SetDescription(aux.Stringid(id,1))
     e3:SetType(EFFECT_TYPE_IGNITION)
@@ -39,7 +39,7 @@ function s.spcon(e,c)
         and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 function s.spfilter(c)
-    return c:IsFaceup() and c:IsType(TYPE_SYNCHRO) and not c:IsAttribute(ATTRIBUTE_DARK)
+    return c:IsFaceup() and c:IsType(TYPE_SYNCHRO)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
     Duel.PayLPCost(tp,1000)
@@ -60,6 +60,7 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp)
     local c=e:GetHandler()
     local rdlv = e:GetLabel()
     if tc:IsRelateToEffect(e) and aux.FaceupFilter(tc,c) then
+         --reduce level of the target monster
         local e1=Effect.CreateEffect(tc)
         e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
         e1:SetType(EFFECT_TYPE_SINGLE)
@@ -67,6 +68,7 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp)
         e1:SetValue(-rdlv)
         e1:SetReset(RESET_EVENT|RESETS_STANDARD)
         tc:RegisterEffect(e1)
+        --change this card's level to the target's current level
 		local lv2=tc:GetLevel()
 		local e2=Effect.CreateEffect(c)
         e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
