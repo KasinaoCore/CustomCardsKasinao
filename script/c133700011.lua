@@ -1,34 +1,47 @@
 --Dark Tuner Catastrogue (K)
 local s,id=GetID()
 function s.initial_effect(c)
-    -- adjust level on summon based on difference
     local e1=Effect.CreateEffect(c)
-    e1:SetDescription(aux.Stringid(id,0))
-    e1:SetCategory(CATEGORY_LVCHANGE)
-    e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-    e1:SetCode(EVENT_SUMMON_SUCCESS)
-    e1:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
-    e1:SetRange(LOCATION_MZONE)
-    e1:SetCountLimit(1,id)
-    e1:SetCondition(s.lvcon)
-    e1:SetTarget(s.lvtg)
-    e1:SetOperation(s.lvop)
-    c:RegisterEffect(e1)
-    local e1a=e1:Clone()
-    e1a:SetCode(EVENT_SPSUMMON_SUCCESS)
-    c:RegisterEffect(e1a)
-    -- destruction effect for darwk/earth/water synchro
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+	e1:SetCode(EFFECT_SUMMON_PROC)
+	e1:SetCondition(s.nscon)
+	c:RegisterEffect(e1)
+    -- adjust level on summon based on difference
     local e2=Effect.CreateEffect(c)
     e2:SetDescription(aux.Stringid(id,1))
-    e2:SetCategory(CATEGORY_DESTROY)
+    e2:SetCategory(CATEGORY_LVCHANGE)
     e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-    e2:SetCode(EVENT_BE_MATERIAL)
+    e2:SetCode(EVENT_SUMMON_SUCCESS)
     e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+    e2:SetRange(LOCATION_MZONE)
+    e2:SetCountLimit(1,id)
+    e2:SetCondition(s.lvcon)
     e2:SetTarget(s.lvtg)
-    e2:SetCondition(s.descon)
-    e2:SetTarget(s.destg)
-    e2:SetOperation(s.desop)
+    e2:SetOperation(s.lvop)
     c:RegisterEffect(e2)
+    local e3=e2:Clone()
+    e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+    c:RegisterEffect(e3)
+    -- destruction effect for darwk/earth/water synchro
+    local e4=Effect.CreateEffect(c)
+    e4:SetDescription(aux.Stringid(id,2))
+    e4:SetCategory(CATEGORY_DESTROY)
+    e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+    e4:SetCode(EVENT_BE_MATERIAL)
+    e4:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+    e4:SetTarget(s.lvtg)
+    e4:SetCondition(s.descon)
+    e4:SetTarget(s.destg)
+    e4:SetOperation(s.desop)
+    c:RegisterEffect(e4)
+end
+function s.nscon(e,c,minc)
+	if c==nil then return true end
+	local tp=c:GetControler()
+	return minc==0 and c:IsLevelAbove(5) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
 end
 
 function s.lvfilter(c)
@@ -75,7 +88,7 @@ function s.descon(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.desfilter(c)
-    return c:IsFaceup() and c:IsOnField()
+    return c:IsOnField()
 end
 
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
