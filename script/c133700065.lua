@@ -1,12 +1,11 @@
 --Magnet Fusion (K)
 local s,id=GetID()
 function s.initial_effect(c)
-	--Special summon 1 Rock fusion monster from extra deck
+	--Special summon 1 Magnedragon from extra deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetCost(s.cost)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
@@ -17,7 +16,7 @@ function s.costfilter(c)
 	return c:IsRace(RACE_ROCK) and c:IsReleasable()
 end
 function s.filter(c,e,tp)
-	return c:IsType(TYPE_FUSION) and c:IsRace(RACE_ROCK) and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0
+	return c:IsType(TYPE_FUSION) and c:IsCode(133700064) and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
