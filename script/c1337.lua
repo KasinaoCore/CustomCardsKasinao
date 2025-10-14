@@ -59,5 +59,5 @@ KasinaoArchetype.Can = {
 }
 
 Card.IsKasinaoDrone = MakeCheck({0x803}, KasinaoArchetype.Drone)
-Card.IsKasinaoCan = MakeCheck((0x805), KasinaoArchetype.Can)
+Card.IsKasinaoCan = MakeCheck({0x805}, KasinaoArchetype.Can)
 
