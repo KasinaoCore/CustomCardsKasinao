@@ -40,7 +40,7 @@ function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 
 	if Duel.CheckLPCost(tp,1000) then
 		Duel.PayLPCost(tp,1000)
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+		Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,1))
 		local g=Duel.SelectMatchingCard(tp,s.canfilter,tp,LOCATION_DECK,0,1,1,nil)
 		if #g>0 then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
