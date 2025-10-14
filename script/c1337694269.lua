@@ -1,5 +1,6 @@
 --BEKAS
 local s,id=GetID()
+Duel.LoadScript("c1337.lua")
 function s.initial_effect(c)
 	--Skill setup
 	aux.AddSkillProcedure(c,1,false,s.flipcon,s.flipop,1)
@@ -16,8 +17,7 @@ function s.initial_effect(c)
 end
 
 function s.canfilter(c)
-	return c:IsMonster() and c:IsAbleToHand()
-		and Card.IsKasinaoCan
+	return c:IsKasinaoCan() and c:IsAbleToHand()
 end
 
 
