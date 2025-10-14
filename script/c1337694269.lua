@@ -3,7 +3,7 @@ local s,id=GetID()
 Duel.LoadScript("c1337.lua")
 function s.initial_effect(c)
 	--Skill setup
-	aux.AddSkillProcedure(c,1,false,s.flipcon,s.flipop,1)
+	aux.AddSkillProcedure(c,1,false,s.flipcon,s.flipop)
 	--flip at start of the duel
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
@@ -28,7 +28,6 @@ function s.startup(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.flipcon(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFlagEffect(ep,id)>0 then return false end
 	return aux.CanActivateSkill(tp)
 		and Duel.IsMainPhase()
 		and Duel.CheckLPCost(tp,1000)
@@ -38,7 +37,6 @@ end
 function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SKILL_FLIP,tp,id|(1<<32))
 	Duel.Hint(HINT_CARD,tp,id)
-	Duel.RegisterFlagEffect(ep,id,RESET_PHASE+PHASE_END,0,1)
 
 	if Duel.CheckLPCost(tp,1000) then
 		Duel.PayLPCost(tp,1000)
