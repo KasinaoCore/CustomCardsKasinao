@@ -61,3 +61,7 @@ KasinaoArchetype.Can = {
 Card.IsKasinaoDrone = MakeCheck({0x803}, KasinaoArchetype.Drone)
 Card.IsKasinaoCan = MakeCheck({0x805}, KasinaoArchetype.Can)
 
+Fusion.ReleaseMaterial = function(e,tc,tp,sg)
+	Duel.Release(sg,REASON_EFFECT+REASON_MATERIAL+REASON_FUSION)
+	sg:Clear()
+end
