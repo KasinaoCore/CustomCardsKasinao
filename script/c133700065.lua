@@ -18,19 +18,20 @@ function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_RELEASE,nil,1,tp,LOCATION_HAND|LOCATION_MZONE)
 end
-function s.atklimit(e,c)
-	return c:IsControler(1-e:GetHandlerPlayer())
+function s.atlimit(e,c)
+	return c~=e:GetHandler()
 end
 function s.stage2(e,tc,tp,sg,chk)
 	if chk==1 then
-		--Cannot be targeted by opponent's card effects
 		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetDescription(3061)
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
+		e1:SetRange(LOCATION_MZONE)
+		e1:SetTargetRange(0,LOCATION_MZONE)
+		e1:SetReset(RESETS_STANDARD_PHASE_END,2)
 		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
-		e1:SetReset(RESETS_STANDARD_PHASE_END)
-		e1:SetValue(aux.tgoval)
+		e1:SetDescription(aux.Stringid(id,1))
+		e1:SetValue(s.atlimit)
 		tc:RegisterEffect(e1)
 	end
 end
