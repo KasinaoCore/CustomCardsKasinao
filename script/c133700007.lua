@@ -1,12 +1,14 @@
 --Swordsman of Flame (K)
 local s,id=GetID()
 function s.initial_effect(c)
+	c:EnableReviveLimit()
+	Fusion.AddProcMix(c,true,true,aux.FilterBoolFunctionEx(Card.IsRace,RACE_WARRIOR),aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_WATER))
 	--change name
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)
 	e0:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e0:SetCode(EFFECT_CHANGE_CODE)
-	e0:SetRange(LOCATION_MZONE+LOCATION_GRAVE+LOCATION_HAND)
+	e0:SetRange(LOCATION_MZONE+LOCATION_GRAVE)
 	e0:SetValue(45231177)
 	c:RegisterEffect(e0)
 	--Destroy a Dinosaur monster before the damage step
