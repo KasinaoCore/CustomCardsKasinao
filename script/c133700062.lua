@@ -23,8 +23,8 @@ function s.initial_effect(c)
 	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER)
 	e2:SetRange(LOCATION_HAND)
 	e2:SetCost(Cost.SelfToGrave)
-	e2:SetTarget(s.target)
-	e2:SetOperation(s.operation)
+	e2:SetTarget(s.dtg)
+	e2:SetOperation(s.dop)
 	c:RegisterEffect(e2)
 	--Search "Orichalcos Shunoros"
 	local e3=Effect.CreateEffect(c)
@@ -44,17 +44,30 @@ end
 function s.spfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FIELD) and c:IsType(TYPE_SPELL)
 end
+
 function s.sfilter(c)
 	return c:IsCode(7634581) and c:IsAbleToHand()
 end
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+
+function s.spcon(e,c)
+	if c==nil then return true end
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
+		and Duel.CheckLPCost(c:GetControler(),500)
+		and Duel.IsExistingMatchingCard(s.spfilter,0,LOCATION_FZONE,LOCATION_FZONE,1,nil)
+end
+
+function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
+	Duel.PayLPCost(tp,500)
+end
+
+function s.dtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_FZONE) and s.filter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_FZONE,LOCATION_FZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_FZONE,LOCATION_FZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
-function s.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.dop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if tc:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsType(TYPE_FIELD) and not tc:IsDisabled() then
@@ -72,22 +85,13 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e2)
 	end
 end
-function s.spcon(e,c)
-	if c==nil then return true end
-	local tp=c:GetControler()
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return false end
-	return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_FZONE,LOCATION_FZONE,1,nil)
-end
-
-function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
-	Duel.PayLPCost(tp,500)
-end
 
 function s.scon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local crp=c:GetReasonPlayer()
 	return c:IsReason(REASON_DESTROY) and c:IsPreviousControler(tp) and tp~=crp and crp~=PLAYER_NONE
 end
+
 function s.stg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
