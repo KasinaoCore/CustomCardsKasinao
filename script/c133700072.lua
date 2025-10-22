@@ -1,4 +1,4 @@
---Plasma Warrior Eitom (K)
+--Plasma Warrior Eitom (K) HEHE!
 local s,id=GetID()
 function s.initial_effect(c)
 	--special summon
