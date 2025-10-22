@@ -1,28 +1,27 @@
 --Orichalcos Kyutora (K)
 local s,id=GetID()
 function s.initial_effect(c)
-	--Special Summon
+	--avoid battle damage
 	local e1=Effect.CreateEffect(c)
-	e1:SetCountLimit(1,id)
-	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
-	e1:SetRange(LOCATION_HAND+LOCATION_GRAVE)
-	e1:SetCondition(s.spcon)
-	e1:SetOperation(s.spop)
+	e1:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
+	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetTargetRange(LOCATION_MZONE,0)
+	e1:SetTarget(s.efilter)
+	e1:SetValue(1)
 	c:RegisterEffect(e1)
 	--disable
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
-	e2:SetCategory(CATEGORY_DISABLE)
+	e2:SetCategory(CATEGORY_DISABLE+CATEGORY_SPECIAL_SUMMON)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetCountLimit(1,{id,1})
+	e2:SetCost(Cost.PayLP(500))
 	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER)
 	e2:SetRange(LOCATION_HAND)
-	e2:SetCost(Cost.SelfToGrave)
 	e2:SetTarget(s.dtg)
 	e2:SetOperation(s.dop)
 	c:RegisterEffect(e2)
@@ -38,52 +37,47 @@ function s.initial_effect(c)
 	e3:SetOperation(s.sop)
 	c:RegisterEffect(e3)
 end
+function s.efilter(e,c)
+	return c:IsType(TYPE_NORMAL)
+end
 function s.filter(c)
 	return c:IsFaceup() and c:IsType(TYPE_FIELD) and c:IsType(TYPE_SPELL) and not c:IsDisabled() 
 end
-function s.spfilter(c)
-	return c:IsFaceup() and c:IsType(TYPE_FIELD) and c:IsType(TYPE_SPELL)
-end
-
 function s.sfilter(c)
 	return c:IsCode(7634581) and c:IsAbleToHand()
 end
 
-function s.spcon(e,c)
-	if c==nil then return true end
-	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
-		and Duel.CheckLPCost(c:GetControler(),500)
-		and Duel.IsExistingMatchingCard(s.spfilter,0,LOCATION_FZONE,LOCATION_FZONE,1,nil)
-end
-
-function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
-	Duel.PayLPCost(tp,500)
-end
-
 function s.dtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_FZONE) and s.filter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_FZONE,LOCATION_FZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_FZONE,LOCATION_FZONE,1,nil)
+		and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_FZONE,LOCATION_FZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
 end
+
 function s.dop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsType(TYPE_FIELD) and not tc:IsDisabled() then
-		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESETS_STANDARD_PHASE_END)
-		tc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_DISABLE_EFFECT)
-		e2:SetValue(RESET_TURN_SET)
-		e2:SetReset(RESETS_STANDARD_PHASE_END)
-		tc:RegisterEffect(e2)
-	end
+	if not tc or not tc:IsRelateToEffect(e) or not tc:IsFaceup() or tc:IsDisabled() then return end
+	Duel.NegateRelatedChain(tc,RESET_TURN_SET)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_DISABLE)
+	e1:SetReset(RESETS_STANDARD_PHASE_END)
+	tc:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(EFFECT_DISABLE_EFFECT)
+	e2:SetValue(RESET_TURN_SET)
+	e2:SetReset(RESETS_STANDARD_PHASE_END)
+	tc:RegisterEffect(e2)
+	--Special Summon if NEGATED
+	if not c:IsRelateToEffect(e) then return end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+	Duel.BreakEffect()
+	Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 end
 
 function s.scon(e,tp,eg,ep,ev,re,r,rp)
