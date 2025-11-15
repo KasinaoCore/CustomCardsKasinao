@@ -60,7 +60,7 @@ function s.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
 function s.atkfilter(c,e,tp)
-	return c:IsKasinaoDrone() and c:IsType(TYPE_MONSTER) and not c:IsPublic() 
+	return c:IsKasinaoDrone() and c:IsSpecialSummonable() and c:IsType(TYPE_MONSTER) and not c:IsPublic() 
 end
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker()~=nil
