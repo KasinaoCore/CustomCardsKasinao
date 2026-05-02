@@ -46,6 +46,7 @@ function s.initial_effect(c)
 	e6:SetOperation(s.atkop)
 	c:RegisterEffect(e6)
 end
+s.listed_series={SET_MAGNA_WARRIOR}
 function s.target(e,c)
 	return c:IsRace(RACE_ROCK)
 end
