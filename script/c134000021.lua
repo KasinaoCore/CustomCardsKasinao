@@ -1,6 +1,6 @@
 --Commandrone Double Sniper
 local s,id=GetID()
-Duel.LoadScript("c1337.lua")
+Duel.LoadScript("kasinao_functions.lua")
 function s.initial_effect(c)
     c:EnableReviveLimit()
     Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsRace,RACE_MACHINE),1,1,Synchro.NonTunerEx(Card.IsKasinaoDrone),1,99)

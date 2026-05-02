@@ -1,5 +1,5 @@
 --Blitz Drone (K)
-Duel.LoadScript("c1337.lua")
+Duel.LoadScript("kasinao_functions.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--activate

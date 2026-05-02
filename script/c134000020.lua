@@ -1,7 +1,7 @@
 --Battledrone Sergeant (K)
 --Destroyed by Joao Kasineiro
 local s,id=GetID()
-Duel.LoadScript("c1337.lua")
+Duel.LoadScript("kasinao_functions.lua")
 function s.initial_effect(c)
 	--link summon
 	Link.AddProcedure(c,aux.FilterBoolFunctionEx2(Card.IsKasinaoDrone),1)

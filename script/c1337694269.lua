@@ -1,6 +1,6 @@
 --BEKAS
 local s,id=GetID()
-Duel.LoadScript("c1337.lua")
+Duel.LoadScript("kasinao_functions.lua")
 function s.initial_effect(c)
 	--Skill setup
 	aux.AddSkillProcedure(c,1,false,s.flipcon,s.flipop)
