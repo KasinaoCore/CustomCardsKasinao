@@ -34,15 +34,6 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetReset(RESET_PHASE|PHASE_END)
 	e1:SetTargetRange(1,0)
 	Duel.RegisterEffect(e1,tp)
-	local e2=Effect.CreateEffect(e:GetHandler())
-    e2:SetDescription(aux.Stringid(id,2))
-    e2:SetType(EFFECT_TYPE_FIELD)
-    e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH+EFFECT_FLAG_CLIENT_HINT)
-    e2:SetCode(EFFECT_CANNOT_DRAW)
-    e2:SetTargetRange(1,0)
-    e2:SetTarget(s.drawlimit)
-    e2:SetReset(RESET_PHASE+PHASE_END)
-    Duel.RegisterEffect(e2,tp)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local res=Duel.TossDice(tp,1)
@@ -52,7 +43,4 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DisableShuffleCheck()
 		Duel.Remove(rg,POS_FACEDOWN,REASON_EFFECT)
 	end
-end
-function s.drawlimit(e,re,tp)
-    return re and re:GetHandler()~=e:GetHandler()
 end
