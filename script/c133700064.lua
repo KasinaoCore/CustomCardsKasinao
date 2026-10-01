@@ -23,10 +23,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.ffilter(c,fc,sumtype,tp,sub,mg,sg)
-	return (c:IsLevel(4) and c:IsRace(RACE_ROCK,fc,sumtype,tp)) and (not sg or not sg:IsExists(s.fusfilter,1,c,c:GetCode(fc,sumtype,tp),fc,sumtype,tp))
+	return c:IsLevel(4) and c:IsRace(RACE_ROCK,fc,sumtype,tp) and c:GetAttribute(fc,sumtype,tp)~=0
+		and (not sg or not sg:IsExists(s.fusfilter,1,c,c:GetAttribute(fc,sumtype,tp),fc,sumtype,tp))
 end
-function s.fusfilter(c,code,fc,sumtype,tp)
-	return c:IsSummonCode(fc,sumtype,tp,code) and not c:IsHasEffect(511002961)
+function s.fusfilter(c,attr,fc,sumtype,tp)
+	return c:IsAttribute(attr,fc,sumtype,tp) and not c:IsHasEffect(511002961)
 end
 function s.damcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
