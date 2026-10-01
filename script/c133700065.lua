@@ -3,8 +3,11 @@ Duel.LoadScript("kasinao_functions.lua")
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
-	c:RegisterEffect(Fusion.CreateSummonEff({handler=c,fusfilter=s.fusfilter,matfilter=s.matfilter,extrafil=s.fextra,extraop=Fusion.ReleaseMaterial,extratg=s.extratg,stage2=s.stage2,checkmat=s.checkmat}))
+	local e1=Fusion.CreateSummonEff({handler=c,fusfilter=s.fusfilter,matfilter=s.matfilter,extrafil=s.fextra,extraop=Fusion.ReleaseMaterial,extratg=s.extratg,stage2=s.stage2,checkmat=s.checkmat})
+	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	c:RegisterEffect(e1)
 end
+
 function s.fusfilter(c)
 	return c:IsType(TYPE_FUSION)
 end
