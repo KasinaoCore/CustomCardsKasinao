@@ -21,27 +21,17 @@ function s.tgfilter2(c)
 	return c:IsRace(RACE_WARRIOR) and c:IsFaceup()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.tgfilter2(chkc) end
-	if chk==0 then 
-		return Duel.IsExistingTarget(s.tgfilter2,tp,LOCATION_MZONE,0,1,nil)
-			and Duel.IsExistingMatchingCard(s.tgfilter,tp, LOCATION_DECK,0,1,nil)
-	end
-	Duel.Hint(HINT_SELECTMSG, tp, HINTMSG_FACEUP)
-	local tc=Duel.SelectTarget(tp,s.tgfilter2,tp,LOCATION_MZONE,0,1,1,nil):GetFirst()
-	local deck=Duel.GetMatchingGroup(s.tgfilter,tp,LOCATION_DECK,0,nil)
-	local g=Group.CreateGroup()
-	local used_codes = {}
-	while g:GetCount() <4 and deck:GetCount() >0 do
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local sel = deck:Select(tp,1,1,nil):GetFirst()
-		if not used_codes[sel:GetCode()] then
-			g:AddCard(sel)
-			used_codes[sel:GetCode()] = true
-		end
-		deck:RemoveCard(sel)
-	end
-	Duel.SendtoGrave(g, REASON_COST)
-	Duel.SetTargetParam(g:GetCount())
+    if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.tgfilter2(chkc) end
+    if chk==0 then 
+        return Duel.IsExistingTarget(s.tgfilter2,tp,LOCATION_MZONE,0,1,nil)
+            and Duel.IsExistingMatchingCard(s.tgfilter,tp,LOCATION_DECK,0,1,nil)
+    end
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+    Duel.SelectTarget(tp,s.tgfilter2,tp,LOCATION_MZONE,0,1,1,nil)
+    Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+    local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,4,nil)
+    Duel.SendtoGrave(g,REASON_COST)
+    Duel.SetTargetParam(#g)
 end
 
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
