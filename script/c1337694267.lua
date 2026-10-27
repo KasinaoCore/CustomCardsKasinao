@@ -27,7 +27,7 @@ function s.thfilter(c)
 end
 
 function s.tgfilter(c)
-	return c:IsSetCard(SET_ELEMENTAL_HERO) and c:IsType(TYPE_NORMAL) and c:IsAbleToGrave()
+	return c:IsSetCard(SET_ELEMENTAL_HERO) and c:IsAbleToGrave() and c:IsMonster()
 end
 
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
