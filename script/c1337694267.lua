@@ -17,7 +17,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 
-s.listed_series={SET_ELEMENTAL_HERO, SET_FUSION}
+s.listed_series={SET_HERO, SET_ELEMENTAL_HERO, SET_FUSION}
 function s.matfilter(c,lc,sumtype,tp)
 	return c:IsSetCard(SET_ELEMENTAL_HERO) and c:IsType(TYPE_NORMAL)
 end
@@ -27,7 +27,7 @@ function s.thfilter(c)
 end
 
 function s.tgfilter(c)
-	return c:IsSetCard(SET_ELEMENTAL_HERO) and c:IsAbleToGrave() and c:IsMonster()
+	return c:IsSetCard(SET_HERO) and c:IsAbleToGrave() and c:IsMonster()
 end
 
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
