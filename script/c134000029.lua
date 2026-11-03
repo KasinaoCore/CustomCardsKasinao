@@ -1,3 +1,4 @@
+--(K)
 --White Warrior - Fog the Treasure Shield
 local s,id=GetID()
 function s.initial_effect(c)
@@ -26,7 +27,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.cfilter(c)
-	return c:IsFaceup() and c:Race(RACE_FAIRY) and c:IsAttribute(ATTRIBUTE_LIGHT)
+	return c:IsFaceup() and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_FAIRY)
 end
 function s.spcon(e,c)
 	if c==nil then return true end
