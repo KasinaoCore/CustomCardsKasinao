@@ -3,12 +3,12 @@ local s,id=GetID()
 function s.initial_effect(c)
 	-- Cannot be Normal Summoned/Set
 	c:EnableUnsummonable()
-	-- Must first be Special Summoned by a card effect
+	-- Must be Special Summoned by a card effect
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
-	e1:SetValue(s.splimit)
+	e1:SetValue(function(_,se) return se:IsHasType(EFFECT_TYPE_ACTIONS) end)
 	c:RegisterEffect(e1)
 	-- Inflict 300 damage to your opponent's LP for each Ojama destroyed by battle
 	local e2=Effect.CreateEffect(c)
@@ -30,11 +30,6 @@ function s.initial_effect(c)
 	e3:SetTarget(s.sptg)
 	e3:SetOperation(s.spop)
 	c:RegisterEffect(e3)
-end
-
--- Must be Special Summoned by CARD EFFECT!!!! I think.
-function s.splimit(e,se,sp,st)
-	return se~=nil
 end
 
 -- Damage effect
