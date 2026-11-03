@@ -11,6 +11,18 @@ function s.initial_effect(c)
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetCondition(s.spcon)
 	c:RegisterEffect(e1)
+	--Tribute this card and target 1 monster to Inflict damage equal to half the ATK of the targeted monster
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,0))
+	e2:SetType(EFFECT_TYPE_QUICK_O)
+	e2:SetCode(EVENT_FREE_CHAIN)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCost(Cost.SelfTribute)
+    e2:SetCondition(s.dmcon)
+	e2:SetTarget(s.dmtg)
+	e2:SetOperation(s.dmop)
+	c:RegisterEffect(e2)
 end
 
 function s.spcon(e,c)
@@ -22,4 +34,18 @@ end
 
 function s.dmcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsPhase(PHASE_MAIN2)
+end
+
+function s.dmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) end
+	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,0,1,e:GetHandler()) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,0,1,1,nil)
+end
+
+function s.dmop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.Damage(1-tp,tc:GetBaseAttack()/2,REASON_EFFECT)
+	end
 end
